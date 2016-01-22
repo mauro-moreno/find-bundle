@@ -1,0 +1,22 @@
+{
+  "name": "mauro-moreno/grep-bundle",
+  "description": "Symfony2 Bundle for a PHP based grep command.",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Mauro Moreno",
+      "email": "moreno.mauro.emanuel@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "symfony/symfony": "~2.1|~3.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": ">4.5"
+  },
+  "autoload": {
+    "psr-4": { "MauroMoreno\\GrepBundle\\": "" }
+  }
+}
