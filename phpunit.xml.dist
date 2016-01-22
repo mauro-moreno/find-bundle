@@ -5,6 +5,8 @@
 >
 
     <php>
+        <server name="ENV" value="test" />
+        <server name="DEBUG" value="true" />
         <server name="KERNEL_DIR" value="./Tests/Fixtures/app" />
     </php>
 

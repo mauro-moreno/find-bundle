@@ -1,16 +1,30 @@
 <?php
-namespace KK\Labs\ChuckConsoleBundle\Tests\Fixtures\app;
+/**
+ * Class AppKernel
+ *
+ * @author Mauro Moreno <moreno.mauro.emanuel@gmail.com>
+ */
+namespace MauroMoreno\GrepBundle\Tests\Fixtures\app;
 
+use MauroMoreno\GrepBundle\GrepBundle;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
+/**
+ * Class AppKernel
+ * @package MauroMoreno\GrepBundle\Tests\Fixtures\app
+ */
 class AppKernel extends Kernel
 {
 
+    /**
+     * Register bundles
+     * @return array
+     */
     public function registerBundles()
     {
         return array(
-            new \MauroMoreno\GrepBundle\GrepBundle(),
+            new GrepBundle(),
         );
     }
 
@@ -20,6 +34,7 @@ class AppKernel extends Kernel
     }
 
     /**
+     * Get cache dir
      * @return string
      */
     public function getCacheDir()
@@ -32,6 +47,7 @@ class AppKernel extends Kernel
     }
 
     /**
+     * Get log dir
      * @return string
      */
     public function getLogDir()
