@@ -27,7 +27,7 @@ class GrepServiceTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $kernel = new AppKernel(getenv('ENV'), getenv('DEBUG'));
+        $kernel = new AppKernel(getenv('ENV'), getenv('DEBUG') === 'true');
         $kernel->boot();
 
         $this->container = $kernel->getContainer();
