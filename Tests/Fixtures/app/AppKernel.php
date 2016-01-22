@@ -1,6 +1,7 @@
 <?php
 /**
  * Class AppKernel
+ *
  * @author Mauro Moreno <moreno.mauro.emanuel@gmail.com>
  */
 namespace MauroMoreno\GrepBundle\Tests\Fixtures\app;

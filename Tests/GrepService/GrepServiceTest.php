@@ -1,11 +1,19 @@
 <?php
-
+/**
+ * Class GrepServiceTest
+ *
+ * @author Mauro Moreno <moreno.mauro.emanuel@gmail.com>
+ */
 namespace MauroMoreno\GrepBundle\Tests\GrepService;
 
 use MauroMoreno\GrepBundle\Tests\Fixtures\app\AppKernel;
 use MauroMoreno\GrepBundle\Service\GrepService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Class GrepServiceTest
+ * @package MauroMoreno\GrepBundle\Tests\GrepService
+ */
 class GrepServiceTest extends \PHPUnit_Framework_TestCase
 {
 
