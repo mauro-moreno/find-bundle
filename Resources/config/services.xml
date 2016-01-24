@@ -4,7 +4,7 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="mauro_moreno_grep.grep_service" class="MauroMoreno\GrepBundle\Service\GrepService">
+        <service id="mauro_moreno_grep.grep_directory_service" class="MauroMoreno\GrepBundle\Services\GrepDirectoryService">
         </service>
     </services>
 </container>
