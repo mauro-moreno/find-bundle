@@ -4,15 +4,15 @@
  *
  * @author Mauro Moreno <moreno.mauro.emanuel@gmail.com>
  */
-namespace MauroMoreno\GrepBundle\Tests\Fixtures\app;
+namespace MauroMoreno\FindBundle\Tests\Fixtures\app;
 
-use MauroMoreno\GrepBundle\GrepBundle;
+use MauroMoreno\FindBundle\FindBundle;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
 /**
  * Class AppKernel
- * @package MauroMoreno\GrepBundle\Tests\Fixtures\app
+ * @package MauroMoreno\FindBundle\Tests\Fixtures\app
  */
 class AppKernel extends Kernel
 {
@@ -24,7 +24,7 @@ class AppKernel extends Kernel
     public function registerBundles()
     {
         return array(
-            new GrepBundle(),
+            new FindBundle(),
         );
     }
 

@@ -1,6 +1,6 @@
 {
-  "name": "mauro-moreno/grep-bundle",
-  "description": "Symfony2 Bundle for a PHP based grep command.",
+  "name": "mauro-moreno/find-bundle",
+  "description": "Symfony2 Bundle for a PHP based find command.",
   "minimum-stability": "stable",
   "license": "MIT",
   "authors": [
@@ -17,6 +17,6 @@
     "phpunit/phpunit": ">4.5"
   },
   "autoload": {
-    "psr-4": { "MauroMoreno\\GrepBundle\\": "" }
+    "psr-4": { "MauroMoreno\\FindBundle\\": "" }
   }
 }
