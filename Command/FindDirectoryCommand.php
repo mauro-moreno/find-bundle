@@ -9,6 +9,7 @@ namespace MauroMoreno\FindBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -33,6 +34,11 @@ class FindDirectoryCommand extends ContainerAwareCommand
                 'directory',
                 InputArgument::REQUIRED,
                 'Directory path.'
+            )->addOption(
+                'extension',
+                'e',
+                InputOption::VALUE_NONE,
+                'File extension.'
             );
     }
 
@@ -45,7 +51,8 @@ class FindDirectoryCommand extends ContainerAwareCommand
             ->get('mauro_moreno_find.find_directory_service')
             ->find(
                 $input->getArgument('pattern'),
-                $input->getArgument('directory')
+                $input->getArgument('directory'),
+                $input->getOption('extension')
             );
 
         if ($files) {

@@ -40,7 +40,7 @@ class FindDirectoryService
      * @param string $extension
      * @return array|bool
      */
-    public function find($pattern, $directory, $extension = "")
+    public function find($pattern, $directory, $extension = "", $line = false)
     {
         if (empty($pattern)) {
             throw new \InvalidArgumentException('Pattern cannot be empty.');

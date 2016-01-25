@@ -75,6 +75,20 @@ class FindDirectoryCommandTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test Command execute, Extension set
+     */
+    public function testExecuteExtensionSet()
+    {
+        $this->commandTester->execute([
+            'command' => $this->command->getName(),
+            'pattern' => 'pattern',
+            'directory' => __DIR__ . '/../Fixtures/directory',
+            '--extension' => 'txt'
+        ]);
+        $this->assertEquals("file_3.txt\n", $this->commandTester->getDisplay());
+    }
+
+    /**
      * Get Mock Container
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
