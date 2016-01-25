@@ -35,37 +35,30 @@ class FindDirectoryService
 
     /**
      * FindDirectory find
-     * @param string $pattern
-     * @param string $directory
-     * @param string $extension
      * @return array|bool
      */
-    public function find($pattern, $directory, $extension = "", $line = false)
+    public function find()
     {
-        if (empty($pattern)) {
+        if ($this->getPattern() === '//') {
             throw new \InvalidArgumentException('Pattern cannot be empty.');
         }
 
-        if (empty($directory)) {
+        if (empty($this->getDirectory())) {
             throw new \InvalidArgumentException(
                 'The target directory cannot be empty.'
             );
         }
 
-        if (!is_dir($directory)) {
+        if (!is_dir($this->getDirectory())) {
             throw new \InvalidArgumentException(
-                sprintf('The target directory "%s" does not exist.', $directory)
+                sprintf(
+                    'The target directory "%s" does not exist.',
+                    $this->getDirectory()
+                )
             );
         }
 
         $return = false;
-
-        $this->setPattern($pattern);
-        $this->setDirectory($directory);
-
-        if (!empty($extension)) {
-            $this->setExtension($extension);
-        }
 
         $path = $this->createPath();
         $this->setFileIterator(new \GlobIterator($path));
@@ -106,11 +99,14 @@ class FindDirectoryService
     }
 
     /**
-     * @param string $pattern
+     * @param $pattern
+     * @return $this
      */
     public function setPattern($pattern)
     {
         $this->pattern = $this->createRegExp($pattern);
+
+        return $this;
     }
 
     /**
@@ -122,11 +118,14 @@ class FindDirectoryService
     }
 
     /**
-     * @param string $directory
+     * @param $directory
+     * @return $this
      */
     public function setDirectory($directory)
     {
         $this->directory = $directory;
+
+        return $this;
     }
 
     /**
@@ -138,11 +137,14 @@ class FindDirectoryService
     }
 
     /**
-     * @param \GlobIterator $file_iterator
+     * @param $file_iterator
+     * @return $this
      */
     public function setFileIterator($file_iterator)
     {
         $this->file_iterator = $file_iterator;
+
+        return $this;
     }
 
     /**
@@ -154,11 +156,14 @@ class FindDirectoryService
     }
 
     /**
-     * @param string $extension
+     * @param $extension
+     * @return $this
      */
     public function setExtension($extension)
     {
         $this->extension = $extension;
+
+        return $this;
     }
 
     /**
@@ -180,7 +185,7 @@ class FindDirectoryService
     {
         $path = $this->getDirectory();
         $path .= '/*';
-        if ($this->getExtension() !== "") {
+        if ($this->getExtension() !== "" && $this->getExtension()) {
             $path .= '.' . $this->getExtension();
         }
         return $path;

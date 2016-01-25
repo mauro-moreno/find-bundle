@@ -58,25 +58,27 @@ class FindDirectoryServiceTest extends \PHPUnit_Framework_TestCase
     /**
      * Test find empty pattern
      */
-    public function testFindEmptyPattern()
+    public function testFindEmptyPatternArgument()
     {
         $this->setExpectedException(
             'InvalidArgumentException',
             'Pattern cannot be empty.'
         );
-        $this->getFindDirectoryService()->find('', __DIR__ . '/directory');
+
+        $this->setPatternAndDirectory("")->find();
     }
 
     /**
      * Test find empty directory
      */
-    public function testFindEmptyDir()
+    public function testFindEmptyDirectoryArgument()
     {
         $this->setExpectedException(
             'InvalidArgumentException',
             'The target directory cannot be empty.'
         );
-        $this->getFindDirectoryService()->find('pattern', '');
+
+        $this->setPatternAndDirectory('pattern', '')->find();
     }
 
     /**
@@ -86,9 +88,9 @@ class FindDirectoryServiceTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'InvalidArgumentException',
-            'The target directory "not_directory" does not exist.'
+            'The target directory "' . __DIR__ . '/not_directory" does not exist.'
         );
-        $this->getFindDirectoryService()->find('pattern', 'not_directory');
+        $this->setPatternAndDirectory('pattern', '/not_directory')->find();
     }
 
     /**
@@ -96,11 +98,8 @@ class FindDirectoryServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testFindEmptyDirectory()
     {
-        $find_directory_service = $this->getFindDirectoryService();
-        $found = $find_directory_service->find(
-            'pattern',
-            __DIR__ . '/empty_directory'
-        );
+        $find_directory_service = $this->setPatternAndDirectory('pattern', '/empty_directory');
+        $found = $find_directory_service->find();
 
         $this->assertEquals('/pattern/', $find_directory_service->getPattern());
         $this->assertEquals(
@@ -126,11 +125,8 @@ class FindDirectoryServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testFindEmptyResult()
     {
-        $find_directory_service = $this->getFindDirectoryService();
-        $found = $find_directory_service->find(
-            'bad',
-            __DIR__ . '/../Fixtures/directory'
-        );
+        $find_directory_service = $this->setPatternAndDirectory('bad');
+        $found = $find_directory_service->find();
 
         $file_iterator = $find_directory_service->getFileIterator();
         $this->assertInstanceOf(
@@ -149,11 +145,8 @@ class FindDirectoryServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testFindResult()
     {
-        $find_directory_service = $this->getFindDirectoryService();
-        $found = $find_directory_service->find(
-            'pattern',
-            __DIR__ . '/../Fixtures/directory'
-        );
+        $find_directory_service = $this->setPatternAndDirectory();
+        $found = $find_directory_service->find();
 
         $file_iterator = $find_directory_service->getFileIterator();
         $this->assertInstanceOf(
@@ -177,12 +170,12 @@ class FindDirectoryServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testFindEmptyResultExtensionSet()
     {
-        $find_directory_service = $this->getFindDirectoryService();
-        $found = $find_directory_service->find(
+        $find_directory_service = $this->setPatternAndDirectory(
             'bad',
-            __DIR__ . '/../Fixtures/directory',
+            '/../Fixtures/directory',
             'txt'
         );
+        $found = $find_directory_service->find();
 
         $file_iterator = $find_directory_service->getFileIterator();
         $this->assertInstanceOf(
@@ -201,12 +194,12 @@ class FindDirectoryServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testFindResultExtensionSet()
     {
-        $find_directory_service = $this->getFindDirectoryService();
-        $found = $find_directory_service->find(
+        $find_directory_service = $this->setPatternAndDirectory(
             'pattern',
-            __DIR__ . '/../Fixtures/directory',
+            '/../Fixtures/directory',
             'txt'
         );
+        $found = $find_directory_service->find();
 
         $file_iterator = $find_directory_service->getFileIterator();
         $this->assertInstanceOf(
@@ -223,6 +216,29 @@ class FindDirectoryServiceTest extends \PHPUnit_Framework_TestCase
             __DIR__ . '/../Fixtures/directory/file_3.txt',
             $found[0]['pathname']
         );
+    }
+
+    /**
+     * Set Pattern and Directory to FindDirectoryService
+     * @param string $pattern
+     * @param string $directory
+     * @param null $extension
+     * @return FindDirectoryService
+     */
+    private function setPatternAndDirectory(
+        $pattern = 'pattern',
+        $directory = '/../Fixtures/directory',
+        $extension = null
+    ) {
+        $find_directory_service = $this->getFindDirectoryService()
+            ->setPattern($pattern)
+            ->setDirectory(
+                (!empty($directory) ? __DIR__ . $directory : $directory)
+            );
+        if (!empty($extension)) {
+            $find_directory_service->setExtension($extension);
+        }
+        return $find_directory_service;
     }
 
     /**

@@ -49,11 +49,10 @@ class FindDirectoryCommand extends ContainerAwareCommand
     {
         $files = $this->getContainer()
             ->get('mauro_moreno_find.find_directory_service')
-            ->find(
-                $input->getArgument('pattern'),
-                $input->getArgument('directory'),
-                $input->getOption('extension')
-            );
+            ->setPattern($input->getArgument('pattern'))
+            ->setDirectory($input->getArgument('directory'))
+            ->setExtension($input->getOption('extension'))
+            ->find();
 
         if ($files) {
             foreach($files as $file) {
