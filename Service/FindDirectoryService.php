@@ -1,16 +1,16 @@
 <?php
 /**
- * Class GrepDirectoryService
+ * Class FindDirectoryService
  *
  * @author Mauro Moreno <moreno.mauro.emanuel@gmail.com>
  */
-namespace MauroMoreno\GrepBundle\Services;
+namespace MauroMoreno\FindBundle\Service;
 
 /**
- * Class GrepDirectoryService
- * @package MauroMoreno\GrepBundle\Service
+ * Class FindDirectoryService
+ * @package MauroMoreno\FindBundle\Service
  */
-class GrepDirectoryService
+class FindDirectoryService
 {
 
     /**
@@ -34,7 +34,7 @@ class GrepDirectoryService
     private $extension = "";
 
     /**
-     * GrepDirectory find
+     * FindDirectory find
      * @param $pattern
      * @param $directory
      * @param string $extension

@@ -1,10 +1,10 @@
 <?php
 /**
- * Class GrepExtension
+ * Class FindExtension
  *
  * @author Mauro Moreno <moreno.mauro.emanuel@gmail.com>
  */
-namespace MauroMoreno\GrepBundle\DependencyInjection;
+namespace MauroMoreno\FindBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
@@ -12,10 +12,10 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
- * Class GrepExtension
- * @package MauroMoreno\GrepBundle\DependencyInjection
+ * Class FindExtension
+ * @package MauroMoreno\FindBundle\DependencyInjection
  */
-class GrepExtension extends Extension
+class FindExtension extends Extension
 {
 
     /**
