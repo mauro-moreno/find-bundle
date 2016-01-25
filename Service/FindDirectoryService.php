@@ -35,8 +35,8 @@ class FindDirectoryService
 
     /**
      * FindDirectory find
-     * @param $pattern
-     * @param $directory
+     * @param string $pattern
+     * @param string $directory
      * @param string $extension
      * @return array|bool
      */
@@ -163,7 +163,7 @@ class FindDirectoryService
 
     /**
      * Create Regular Expresion
-     * @param $pattern
+     * @param string $pattern
      * @return string
      */
     private function createRegExp($pattern)
