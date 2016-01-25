@@ -15,7 +15,7 @@ Using composer:
 composer require mauro-moreno/find-bundle
 ```
 
-Register Bundle in you app/AppKernek.php:
+Register Bundle in you app/AppKernel.php:
 
 ```php
 // app/AppKernel.php
