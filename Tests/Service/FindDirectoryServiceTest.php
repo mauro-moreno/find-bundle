@@ -222,7 +222,7 @@ class FindDirectoryServiceTest extends \PHPUnit_Framework_TestCase
      * Set Pattern and Directory to FindDirectoryService
      * @param string $pattern
      * @param string $directory
-     * @param null $extension
+     * @param string $extension
      * @return FindDirectoryService
      */
     private function setPatternAndDirectory(
