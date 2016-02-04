@@ -44,19 +44,6 @@ class FinderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test find, wrong parameter fileInfo
-     *
-     * @expectedException \TypeError
-     */
-    public function testFindWrongParameterFileInfo()
-    {
-        $found = $this->finder->find(
-            'pattern',
-            'bad_parameter'
-        );
-    }
-
-    /**
      * Test find, not found
      */
     public function testFindNotFound()
