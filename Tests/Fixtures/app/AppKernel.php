@@ -4,8 +4,8 @@
  *
  * @author Mauro Moreno <moreno.mauro.emanuel@gmail.com>
  */
-namespace MauroMoreno\FindBundle\Tests\Fixtures\app;
 
+use Liip\FunctionalTestBundle\LiipFunctionalTestBundle;
 use MauroMoreno\FindBundle\FindBundle;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -24,7 +24,8 @@ class AppKernel extends Kernel
     public function registerBundles()
     {
         return array(
-            new FindBundle(),
+            new LiipFunctionalTestBundle(),
+            new FindBundle()
         );
     }
 

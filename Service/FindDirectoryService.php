@@ -24,14 +24,32 @@ class FindDirectoryService
     private $directory;
 
     /**
-     * @var \GlobIterator
-     */
-    private $file_iterator;
-
-    /**
      * @var string
      */
     private $extension = "";
+
+    /**
+     * @var FinderInterface
+     */
+    private $finder;
+
+    /**
+     * @var ListerInterface
+     */
+    private $lister;
+
+    /**
+     * FindDirectoryService constructor.
+     * @param FinderInterface $finder
+     * @param ListerInterface $lister
+     */
+    public function __construct(
+        FinderInterface $finder,
+        ListerInterface $lister
+    ) {
+        $this->finder = $finder;
+        $this->lister = $lister;
+    }
 
     /**
      * FindDirectory find
@@ -39,7 +57,7 @@ class FindDirectoryService
      */
     public function find()
     {
-        if ($this->getPattern() === '//') {
+        if ($this->getPattern() === '') {
             throw new \InvalidArgumentException('Pattern cannot be empty.');
         }
 
@@ -60,29 +78,21 @@ class FindDirectoryService
 
         $return = false;
 
-        $path = $this->createPath();
-        $this->setFileIterator(new \GlobIterator($path));
-
-        // TODO: Fix when bug is fixed https://bugs.php.net/bug.php?id=55701
-        // $count = $this->getFileIterator()->count();
-        $count = count(iterator_to_array($this->getFileIterator()));
+        $file_iterator = $this->lister->ls(
+            $this->getDirectory(),
+            $this->getExtension()
+        );
+        $count = count(iterator_to_array($file_iterator));
 
         if ($count > 0) {
             $return = [];
-            foreach ($this->getFileIterator() as $file) {
-                $data = file_get_contents($file->getPathName());
-                preg_match_all(
-                    $this->getPattern(),
-                    $data,
-                    $matches,
-                    PREG_OFFSET_CAPTURE
-                );
-
-                if (count($matches[0]) > 0) {
+            foreach ($file_iterator as $file) {
+                $found = $this->finder->find($this->getPattern(), $file);
+                if ($found !== false) {
                     $return[] = [
-                        'filename' => $file->getFilename(),
-                        'pathname' => $file->getPathName()
-                    ];
+                        'filename' => $found->getFilename(),
+                        'pathname' => $found->getPathName()
+                    ];;
                 }
             }
         }
@@ -104,7 +114,7 @@ class FindDirectoryService
      */
     public function setPattern($pattern)
     {
-        $this->pattern = $this->createRegExp($pattern);
+        $this->pattern = $pattern;
 
         return $this;
     }
@@ -129,25 +139,6 @@ class FindDirectoryService
     }
 
     /**
-     * @return \GlobIterator
-     */
-    public function getFileIterator()
-    {
-        return $this->file_iterator;
-    }
-
-    /**
-     * @param $file_iterator
-     * @return $this
-     */
-    public function setFileIterator($file_iterator)
-    {
-        $this->file_iterator = $file_iterator;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getExtension()
@@ -164,31 +155,6 @@ class FindDirectoryService
         $this->extension = $extension;
 
         return $this;
-    }
-
-    /**
-     * Create Regular Expresion
-     * @param string $pattern
-     * @return string
-     */
-    private function createRegExp($pattern)
-    {
-        $regexp = "/$pattern/";
-        return $regexp;
-    }
-
-    /**
-     * Create Path
-     * @return string
-     */
-    private function createPath()
-    {
-        $path = $this->getDirectory();
-        $path .= '/*';
-        if ($this->getExtension() !== "" && $this->getExtension()) {
-            $path .= '.' . $this->getExtension();
-        }
-        return $path;
     }
 
 }

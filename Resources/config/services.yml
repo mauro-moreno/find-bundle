@@ -8,12 +8,10 @@ services:
     class: %mauro_moreno_find.finder.class%
 
   mauro_moreno_find.lister:
-      class: %mauro_moreno_find.lister.class%
+    class: %mauro_moreno_find.lister.class%
 
   mauro_moreno_find.find_directory_service:
     class: %mauro_moreno_find.find_directory_service.class%
     arguments:
       - mauro_moreno_find.finder
       - mauro_moreno_find.lister
-
-liip_functional_test: ~

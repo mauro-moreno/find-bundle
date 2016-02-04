@@ -4,11 +4,11 @@
  *
  * @author Mauro Moreno <moreno.mauro.emanuel@gmail.com>
  */
-namespace MauroMoreno\FindBundle\Tests\FindServices;
+namespace MauroMoreno\FindBundle\Tests\Services;
 
-use MauroMoreno\FindBundle\Tests\Fixtures\app\AppKernel;
 use MauroMoreno\FindBundle\Service\FindDirectoryService;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use MauroMoreno\FindBundle\Service\FinderInterface;
+use MauroMoreno\FindBundle\Service\ListerInterface;
 
 /**
  * Class FindServiceTest
@@ -17,42 +17,28 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class FindDirectoryServiceTest extends \PHPUnit_Framework_TestCase
 {
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private $finder_mock;
+
+    private $lister_mock;
 
     /**
-     * {@inheritdoc}
+     * @beforeClass
      */
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
-        $kernel = new AppKernel(getenv('ENV'), getenv('DEBUG') === 'true');
-        $kernel->boot();
-
-        $this->container = $kernel->getContainer();
-        mkdir(__DIR__ . '/empty_directory');
+        if (!is_dir(__DIR__ . '/empty_directory')) {
+            mkdir(__DIR__ . '/empty_directory');
+        }
     }
 
     /**
-     * {@inheritdoc}
+     * @afterClass
      */
-    protected function tearDown()
+    public static function tearDownAfterClass()
     {
-        rmdir(__DIR__ . '/empty_directory');
-        parent::tearDown();
-    }
-
-    /**
-     * Test if service is defined in container.
-     */
-    public function testServiceIsDefinedInContainer()
-    {
-        $service = $this->container->get(
-            'mauro_moreno_find.find_directory_service'
-        );
-
-        $this->assertInstanceOf(FindDirectoryService::class, $service);
+        if (is_dir(__DIR__ . '/empty_directory')) {
+            rmdir(__DIR__ . '/empty_directory');
+        }
     }
 
     /**
@@ -98,24 +84,23 @@ class FindDirectoryServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testFindEmptyDirectory()
     {
-        $find_directory_service = $this->setPatternAndDirectory('pattern', '/empty_directory');
+        $find_directory_service = $this->setPatternAndDirectory(
+            'pattern',
+            '/empty_directory'
+        );
+        $this->lister_mock->expects($this->once())
+            ->method('ls')
+            ->will($this->returnValue(new \GlobIterator(
+                __DIR__ . '/empty_directory/*'
+            )));
+
         $found = $find_directory_service->find();
 
-        $this->assertEquals('/pattern/', $find_directory_service->getPattern());
+        $this->assertEquals('pattern', $find_directory_service->getPattern());
         $this->assertEquals(
             __DIR__ . '/empty_directory',
             $find_directory_service->getDirectory()
         );
-
-        $file_iterator = $find_directory_service->getFileIterator();
-        $this->assertInstanceOf(
-            \GlobIterator::class,
-            $file_iterator
-        );
-
-        // TODO: Fix when bug is fixed https://bugs.php.net/bug.php?id=55701
-        // $this->assertEquals(0, $file_iterator->count());
-        $this->assertEquals(0, count(iterator_to_array($file_iterator)));
 
         $this->assertFalse($found);
     }
@@ -126,17 +111,17 @@ class FindDirectoryServiceTest extends \PHPUnit_Framework_TestCase
     public function testFindEmptyResult()
     {
         $find_directory_service = $this->setPatternAndDirectory('bad');
+        $this->lister_mock->expects($this->once())
+            ->method('ls')
+            ->will($this->returnValue(new \GlobIterator(
+                __DIR__ . '/../Fixtures/directory/*'
+            )));
+        $this->finder_mock->expects($this->exactly(4))
+            ->method('find')
+            ->will($this->returnValue(false));
+
         $found = $find_directory_service->find();
 
-        $file_iterator = $find_directory_service->getFileIterator();
-        $this->assertInstanceOf(
-            \GlobIterator::class,
-            $file_iterator
-        );
-
-        // TODO: Fix when bug is fixed https://bugs.php.net/bug.php?id=55701
-        // $this->assertEquals(0, $file_iterator->count());
-        $this->assertEquals(4, count(iterator_to_array($file_iterator)));
         $this->assertEquals(0, count($found));
     }
 
@@ -146,17 +131,30 @@ class FindDirectoryServiceTest extends \PHPUnit_Framework_TestCase
     public function testFindResult()
     {
         $find_directory_service = $this->setPatternAndDirectory();
+        $this->lister_mock->expects($this->once())
+            ->method('ls')
+            ->will($this->returnValue(new \GlobIterator(
+                __DIR__ . '/../Fixtures/directory/*'
+            )));
+        $this->finder_mock->expects($this->at(0))
+            ->method('find')
+            ->will($this->returnValue(new \SplFileInfo(
+                __DIR__ . '/../Fixtures/directory/file_1'
+            )));
+        $this->finder_mock->expects($this->at(1))
+            ->method('find')
+            ->will($this->returnValue(false));
+        $this->finder_mock->expects($this->at(2))
+            ->method('find')
+            ->will($this->returnValue(new \SplFileInfo(
+                __DIR__ . '/../Fixtures/directory/file_1.txt'
+            )));
+        $this->finder_mock->expects($this->at(3))
+            ->method('find')
+            ->will($this->returnValue(false));
+
         $found = $find_directory_service->find();
 
-        $file_iterator = $find_directory_service->getFileIterator();
-        $this->assertInstanceOf(
-            \GlobIterator::class,
-            $file_iterator
-        );
-
-        // TODO: Fix when bug is fixed https://bugs.php.net/bug.php?id=55701
-        // $this->assertEquals(0, $file_iterator->count());
-        $this->assertEquals(4, count(iterator_to_array($file_iterator)));
         $this->assertEquals(2, count($found));
         $this->assertEquals('file_1', $found[0]['filename']);
         $this->assertEquals(
@@ -175,17 +173,17 @@ class FindDirectoryServiceTest extends \PHPUnit_Framework_TestCase
             '/../Fixtures/directory',
             'txt'
         );
+        $this->lister_mock->expects($this->once())
+            ->method('ls')
+            ->will($this->returnValue(new \GlobIterator(
+                __DIR__ . '/../Fixtures/directory/*.txt'
+            )));
+        $this->finder_mock->expects($this->exactly(2))
+            ->method('find')
+            ->will($this->returnValue(false));
+
         $found = $find_directory_service->find();
 
-        $file_iterator = $find_directory_service->getFileIterator();
-        $this->assertInstanceOf(
-            \GlobIterator::class,
-            $file_iterator
-        );
-
-        // TODO: Fix when bug is fixed https://bugs.php.net/bug.php?id=55701
-        // $this->assertEquals(0, $file_iterator->count());
-        $this->assertEquals(2, count(iterator_to_array($file_iterator)));
         $this->assertEquals(0, count($found));
     }
 
@@ -199,22 +197,49 @@ class FindDirectoryServiceTest extends \PHPUnit_Framework_TestCase
             '/../Fixtures/directory',
             'txt'
         );
+        $this->lister_mock->expects($this->once())
+            ->method('ls')
+            ->will($this->returnValue(new \GlobIterator(
+                __DIR__ . '/../Fixtures/directory/*.txt'
+            )));
+        $this->finder_mock->expects($this->at(0))
+            ->method('find')
+            ->will($this->returnValue(new \SplFileInfo(
+                __DIR__ . '/../Fixtures/directory/file_3.txt'
+            )));
+        $this->finder_mock->expects($this->at(1))
+            ->method('find')
+            ->will($this->returnValue(false));
+
         $found = $find_directory_service->find();
 
-        $file_iterator = $find_directory_service->getFileIterator();
-        $this->assertInstanceOf(
-            \GlobIterator::class,
-            $file_iterator
-        );
-
-        // TODO: Fix when bug is fixed https://bugs.php.net/bug.php?id=55701
-        // $this->assertEquals(0, $file_iterator->count());
-        $this->assertEquals(2, count(iterator_to_array($file_iterator)));
-        $this->assertEquals(1, count($found));
         $this->assertEquals('file_3.txt', $found[0]['filename']);
         $this->assertEquals(
             __DIR__ . '/../Fixtures/directory/file_3.txt',
             $found[0]['pathname']
+        );
+    }
+
+    /**
+     * Get FindDirectoryService instance
+     * @return FindDirectoryService
+     */
+    private function getFindDirectoryService()
+    {
+        // Mock Finder.
+        $mock_builder = $this->getMockBuilder(FinderInterface::class);
+        $mock_builder->setMethods(['find']);
+        $this->finder_mock = $mock_builder->getMock();
+
+        // Mock Lister.
+        $mock_builder = $this->getMockBuilder(ListerInterface::class);
+        $mock_builder->setMethods(['ls']);
+        $this->lister_mock = $mock_builder->getMock();
+
+        // Return service with mocked interfaces.
+        return new FindDirectoryService(
+            $this->finder_mock,
+            $this->lister_mock
         );
     }
 
@@ -239,15 +264,6 @@ class FindDirectoryServiceTest extends \PHPUnit_Framework_TestCase
             $find_directory_service->setExtension($extension);
         }
         return $find_directory_service;
-    }
-
-    /**
-     * Get FindDirectoryService instance
-     * @return FindDirectoryService
-     */
-    private function getFindDirectoryService()
-    {
-        return new FindDirectoryService();
     }
 
 }
