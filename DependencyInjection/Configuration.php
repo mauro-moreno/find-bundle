@@ -23,6 +23,19 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('mauro_moreno_find');
+        $rootNode
+            ->isRequired()
+            ->children()
+                ->scalarNode('find_directory_service')
+                    ->isRequired()
+                ->end()
+                ->scalarNode('finder')
+                    ->isRequired()
+                ->end()
+                ->scalarNode('lister')
+                    ->isRequired()
+                ->end()
+            ->end();
 
         return $treeBuilder;
     }

@@ -8,6 +8,8 @@ namespace MauroMoreno\FindBundle\Tests\Command;
 
 use MauroMoreno\FindBundle\Command\FindDirectoryCommand;
 use MauroMoreno\FindBundle\Service\FindDirectoryService;
+use MauroMoreno\FindBundle\Service\Finder;
+use MauroMoreno\FindBundle\Service\Lister;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -101,7 +103,7 @@ class FindDirectoryCommandTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('get')
             ->with('mauro_moreno_find.find_directory_service')
-            ->willReturn(new FindDirectoryService());
+            ->willReturn(new FindDirectoryService(new Finder, new Lister));
         return $mockContainer;
     }
 
